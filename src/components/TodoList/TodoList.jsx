@@ -4,12 +4,14 @@ import { useSelector, useDispatch} from 'react-redux'
 import { deleteTodo } from '../../feature/Todo/TodoSlice'
 import EditTodo from '../pages/EditTodo/EditTodo'
 import { useState } from 'react'
+import toast from 'react-hot-toast'
 
 
 const TodoList = () => {
   
 
-  const todos = useSelector(state =>state.todo);
+  const todos = useSelector(state =>state.todos);
+  console.log("My todo Sample",todos)
   const dispatch =  useDispatch();
   const [editOpen, setEditOpen] = useState(false);
   const [EditData, SetEditData] = useState([])
@@ -19,6 +21,26 @@ const TodoList = () => {
     SetEditData({id,task})
   };
 
+console.log(todos.length)
+
+  function handleDelete(id,item) {
+    const toastMessage = (
+      <span>
+        <b>{item}</b> deleted successfully
+      </span>
+    );  
+    dispatch(deleteTodo(id))
+    toast(toastMessage,
+    {
+      icon: '🙃',
+      style: {
+        borderRadius: '10px',
+        background: 'white',
+        color: 'black',
+      },
+    }
+  );
+  } 
 
  
   return (
@@ -61,14 +83,14 @@ const TodoList = () => {
      
           <table className="w-full">
   <tbody>
-    { todos ? todos.map((item, iteration) => (
+    { todos.length>=1 ? todos.map((item, index) => (
       <tr key={item.id} className="flex justify-between gap-x-4 py-5 bg-white m-2 my-4 border rounded-lg">
         <td className="flex min-w-0 items-center " style={{ flex: 3 }}> 
           <div className="min-w-0 flex-auto">
             <h1 className=" font-semibold leading-6 text-gray-900">
-              <i className="fa-solid fa-circle-info px-4"></i>{item.task}
+              <i className="fa-solid fa-circle-info px-4"></i>{item.taskName}
             </h1>
-            <p className="mt-1 truncate text-xs leading-5 text-gray-500 px-4">Task no {iteration + 1}</p>
+            <p className="mt-1 truncate text-xs leading-5 text-gray-500 px-4">Task no {index + 1}</p>
           </div>
         </td>
 
@@ -101,18 +123,25 @@ const TodoList = () => {
       
          
             
-            <button className="text-sm leading-6 text-gray-500 bg-red-100 hover:bg-red-200 focus:outline-none focus:underline px-2 py-1 rounded-md" onClick={()=>dispatch(deleteTodo(item.id))} >Delete </button>
+            <button className="text-sm leading-6 text-gray-500 bg-red-100 hover:bg-red-200 focus:outline-none focus:underline px-2 py-1 rounded-md" onClick={()=>handleDelete(item.id,item.task)} >Delete </button>
           </div>
           <button className="text-sm leading-6 text-gray-500 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:underline px-2 py-1 rounded-md">Toggle</button>
-        <Link  to="/:id/details"  >
-          <button className="text-sm leading-6 text-gray-500 bg-yellow-100 hover:bg-yellow-200 focus:outline-none focus:underline px-2 py-1 rounded-md">Detail</button>
+        <Link  to={`/${item.id}/details`}  >
+          <button className="text-sm leading-6 text-gray-500 bg-yellow-100 hover:bg-yellow-200 focus:outline-none focus:underline px-2 py-1 rounded-md" >Detail</button>
         </Link>
         
         </td>
       </tr>
     ))
-    : ""
-  }
+    :(<tr>
+      <td colSpan="6" className="text-center py-4">
+        <div className='text-black bg-dark'>
+          <h1><b>No Task Added</b></h1>
+          <p>Please click on <b>Add Todo</b> to add a task</p>
+        </div>
+      </td>
+    </tr>
+  )}
     {editOpen?  <EditTodo setEditOpen={setEditOpen} EditData={EditData} /> : ""}
   </tbody>
 </table>

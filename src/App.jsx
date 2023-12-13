@@ -1,5 +1,3 @@
-
-
 import {
   BrowserRouter,
   Route,
@@ -10,6 +8,8 @@ import TodoList from './components/TodoList/TodoList';
 import AddTodo from './components/pages/AddTodo/AddTodo'
 import Details from './components/pages/Details/Details';
 import EditTodo from "./components/pages/EditTodo/EditTodo";
+import { Toaster } from 'react-hot-toast';
+
 
 const App = () => {
   return (
@@ -21,6 +21,7 @@ const App = () => {
     <Route path='/addtodo' element={<AddTodo/>} />
     <Route path='/:id/details' element={<Details/>} />
    </Routes>
+   <Toaster />
    </BrowserRouter>
   )
 }
